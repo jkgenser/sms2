@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import Flask, render_template, request, url_for, flash, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 import config
 import twilio.twiml
@@ -12,12 +11,41 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+from models import Participant, Survey, Ping
 
-# endpoint for app to get hit by twilio POST reqests
-@app.route('/message', methods=['POST'])
+
+@app.route('/', methods=['GET', 'POST'])
+def show_participants():
+    from models import Participant
+    participants = db.session.query(Participant).all()
+    return render_template('participants.html',
+                       participants=participants
+
+# Eventually use WTForms for this
+# Eventually move this function to the views module
+@app.route('/new', methods=['GET', 'POST'])
+def add_participant():
+    new_participant = {}
+    # get next ID in the increment
+    new_participant['id'] = db.session.query(Participant).order_by(Participant.id.desc()).first().id + 1
+    new_participant['name'] = request.form['name']
+    new_participant['phone_number'] = request.form['phone']
+    new_participant['role'] = request.form['role']
+    new_participant['location'] = request.form['location']
+    db.session.add(Participant(**new_participant))
+    db.session.commit()
+    flash('Participant succesfully added!')
+    return render_template('participants.html',
+                       participants=db.session.query(Participant).all())
+
+# with app.test_request_context():
+#     print url_for('show_participants')
+#     print url_for('add_participant')
+#     print(request.form)
+
+# endpoint for twilio POST reqests
+# EVENTUALLY move this to a separate views module..
+@app.route('/message', methods=['GET', 'POST'])
 def store_response():
 
     try:
@@ -33,10 +61,11 @@ def store_response():
 
         ping['received_time'] = datetime.datetime.now()
         ping['received'] = 1
+        ping['sent'] = 0
 
         db.session.add(Ping(**ping))
         db.session.commit()
-        print('things were saved succesfully')
+        print('ping data was saved succesfully')
 
     except:
         print('something went wrong')
@@ -52,4 +81,3 @@ if __name__ == '__main__':
     app.run()
 
 
-from models import Participant, Survey, Ping

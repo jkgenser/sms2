@@ -1,11 +1,15 @@
 from app import db
+# from flask.ext.sqlalchemy import SQLAlchemy
+# db = SQLAlchemy()
 
 class Participant(db.Model):
     __tablename__ = 'participants'
 
-    id = db.Column(db.Integer, primary_key=True)
-    p_num = db.Column(db.String)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String)
+    phone_number = db.Column(db.String)
     role = db.Column(db.String)
+    location = db.Column(db.String)
 
 class Survey(db.Model):
     __tablename__ = 'surveys'
