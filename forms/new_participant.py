@@ -9,6 +9,6 @@ def _locations():
 class NewParticipantForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     phone_number = StringField('Phone number', validators=[
-                               DataRequired(), Length(min=10, max=10)], message='Phone number must be 10 digits')
+                               DataRequired(), Length(min=10, max=10)])
     role = StringField('Functional role', validators=[DataRequired()])
-    location = SelectField('Location', choices=_locations(), validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired()])

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Study</title>
+</head>
+<body>
+    <h3>Existing Surveys</h3>
+    <table border=1>
+        <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Duration</th>
+            <th>Frequency</th>
+            <th>Instrument</th>
+        </thead>
+        <tbody>
+        {% for survey in surveys %}
+            <tr>
+                <td><a href="/surveys/{{survey.id}}">{{ survey.id }}</a></td>
+                <td>{{ survey.name }}</td>
+                <td>{{ survey.duration}}</td>
+                <td>{{ survey.frequency }}</td>
+                <td>{{ survey.instrument }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+<form method="post" class="form-horizontal col-lg-5" action="{{ url_for('create_survey' )}}">
+    <div class="form-group">
+        <h3>Create a new survey</h3>
+        <p>Enter the name of the survey: {{ form.name }} </p>
+        <p>Enter the duration of the survey: {{ form.duration }} </p>
+        <p>Enter the frequency of the survey: {{ form.frequency }}</p>
+        <p>Enter the survey instrument (work categories) here: {{ form.instrument }}</p>
+        <button type="submit" class="btn btn-default">Create</button>
+    </div>
+</form>
+
+
+</body>
+</html>

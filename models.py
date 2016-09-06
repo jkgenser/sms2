@@ -1,6 +1,16 @@
 from app import db
-# from flask.ext.sqlalchemy import SQLAlchemy
-# db = SQLAlchemy()
+
+class Survey(db.Model):
+    __tablename__ = 'surveys'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String) # name of the survey
+    duration = db.Column(db.Integer)   # number of days the survey will run for
+    frequency = db.Column(db.Integer)  # number of pings sent per day
+    instrument = db.Column(db.String)  # string of the survey instrument
+
+    participants = db.relationship('Participant', backref='survey')
+    pings = db.relationship('Ping', backref='survey')
 
 class Participant(db.Model):
     __tablename__ = 'participants'
@@ -10,13 +20,8 @@ class Participant(db.Model):
     phone_number = db.Column(db.String)
     role = db.Column(db.String)
     location = db.Column(db.String)
+    survey_id = db.Column(db.Integer, db.ForeignKey('surveys.id'))
 
-class Survey(db.Model):
-    __tablename__ = 'surveys'
-
-    id = db.Column(db.Integer, primary_key=True)
-    survey_name = db.Column(db.String)
-    participant_id = db.Column(db.Integer, db.ForeignKey('participants.id'))
 
 class Ping(db.Model):
     __tablename__ = 'pings'

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Study</title>
+</head>
+<body>
+
+
+<h3>Survey (Name = {{ survey.name }}) (ID = {{ survey.id }})</h3>
+
+    <table border=1>
+        <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Duration</th>
+            <th>Frequency</th>
+            <th>Instrument</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ survey.id }}</td>
+                <td>{{ survey.name }}</td>
+                <td>{{ survey.duration}}</td>
+                <td>{{ survey.frequency }}</td>
+                <td>{{ survey.instrument }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<h3>Participants on this Survey</h3>
+
+    <table border=1>
+        <thead>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Functional Role</th>
+            <th>Location</th>
+            <th>Assigned to</th>
+        </thead>
+        <tbody>
+        {% for participant in participants %}
+            <tr>
+                <td>{{ participant.id }}</td>
+                <td>{{ participant.name }}</td>
+                <td>{{ participant.phone_number }}</td>
+                <td>{{ participant.role }}</td>
+                <td>{{ participant.location }}</td>
+                <td>{{ participant.survey_id }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+<h3>Add Participants</h3>
+
+    <form method="post" action="{{ url_for('add_to_survey') }}">
+        <div class="form-group">
+        <p>Add an unassigned individual to the survey. {{ form.new_participant }}</p>
+        <button type="submit" class="btn btn-default">Add</button>
+        </div>
+    </form>
+
+
+</body>
+</html>

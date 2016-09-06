@@ -12,50 +12,95 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
 from models import Participant, Survey, Ping
+from forms.new_survey import NewSurveyForm
+from forms.new_participant import NewParticipantForm
+from forms.add_participant import AddParticipantForm
 
-
+# View to see all participants who have been added to the application
 @app.route('/', methods=['GET', 'POST'])
 def show_participants():
-    from models import Participant
-    participants = db.session.query(Participant).all()
+    form = NewParticipantForm(request.form)
     return render_template('participants.html',
-                       participants=participants
+                           participants=db.session.query(Participant).order_by(Participant.id).all(),
+                           form=form)
 
-# Eventually use WTForms for this
-# Eventually move this function to the views module
-@app.route('/new', methods=['GET', 'POST'])
-def add_participant():
-    new_participant = {}
-    # get next ID in the increment
-    new_participant['id'] = db.session.query(Participant).order_by(Participant.id.desc()).first().id + 1
-    new_participant['name'] = request.form['name']
-    new_participant['phone_number'] = request.form['phone']
-    new_participant['role'] = request.form['role']
-    new_participant['location'] = request.form['location']
-    db.session.add(Participant(**new_participant))
+
+# View to see all current surveys
+@app.route('/surveys', methods=['GET'])
+def show_surveys():
+    form = NewSurveyForm(request.form)
+    surveys = db.session.query(Survey).all()
+    return render_template('surveys.html', surveys=surveys, form=form)
+
+
+# View to add participants to a given survey
+@app.route('/surveys/<id>', methods=['GET'])
+def show_survey_id(id):
+    survey = db.session.query(Survey).get(id)
+    participants = db.session.query(Participant).filter(Participant.survey_id == id)
+    form = AddParticipantForm(request.form).new()
+    return render_template('survey.html', survey=survey, form=form, participants=participants)
+
+
+# TODO use WTForms for this
+# TODO move this function to the views module
+# TODO Use phonenumber module to validate phone numbers that are added to the database.
+@app.route('/create_participant', methods=['POST'])
+def create_participant():
+    form = NewParticipantForm(request.form)
+    new_participant = Participant(**form.data)
+    new_participant.id = db.session.query(Participant).order_by(Participant.id.desc()).first().id + 1
+    db.session.add(new_participant)
     db.session.commit()
     flash('Participant succesfully added!')
-    return render_template('participants.html',
-                       participants=db.session.query(Participant).all())
+    return redirect(url_for('show_participants'))
 
+
+@app.route('/create_survey', methods=['POST'])
+def create_survey():
+    # from models import Survey
+    form = NewSurveyForm(request.form)
+    surveys = db.session.query(Survey).all()
+
+    new_survey = Survey(**form.data)
+    new_survey.id = db.session.query(Survey).order_by(Survey.id.desc()).first().id + 1
+    db.session.add(new_survey)
+    db.session.commit()
+    return render_template('surveys.html', surveys=surveys, form=form)
+
+
+@app.route('/add_participant', methods=['POST'])
+def add_to_survey():
+    form = AddParticipantForm(request.form).new()
+    participant_id = form.data['new_participant']
+    survey_id = int(str.split(request.referrer, "/")[-1])
+    participant = db.session.query(Participant).filter(Participant.id == participant_id).one()
+    participant.survey_id = survey_id
+    db.session.commit()
+
+    return redirect(url_for('show_survey_id', id=survey_id))
+
+#
 # with app.test_request_context():
 #     print url_for('show_participants')
-#     print url_for('add_participant')
-#     print(request.form)
+#     print url_for('add_to_survey')
+#     print url_for('show_surveys')
+#     print url_for('show_survey_id', id=1)
+
 
 # endpoint for twilio POST reqests
-# EVENTUALLY move this to a separate views module..
+# TODO move this to a separate views module..
 @app.route('/message', methods=['GET', 'POST'])
 def store_response():
 
     try:
         ping = {}
 
-        # Eventually make this do a lookup from participants
+        # TODO make this do a lookup from participants
         # if the number is not in participants, do not store the ping in DB.
         ping['from_num'] = request.values['From']
 
-        # Eventually check if response is integer, otherwise store as string
+        # TODO check if response is integer, otherwise store as string
         # Or always store as string ... not sure
         ping['response'] = request.values['Body']
 
