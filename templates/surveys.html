@@ -12,7 +12,7 @@
             <th>Name</th>
             <th>Duration</th>
             <th>Frequency</th>
-            <th>Instrument</th>
+            <th>Start Date</th>
         </thead>
         <tbody>
         {% for survey in surveys %}
@@ -21,7 +21,7 @@
                 <td>{{ survey.name }}</td>
                 <td>{{ survey.duration}}</td>
                 <td>{{ survey.frequency }}</td>
-                <td>{{ survey.instrument }}</td>
+                <td>{{ survey.start_date }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -33,7 +33,7 @@
         <p>Enter the name of the survey: {{ form.name }} </p>
         <p>Enter the duration of the survey: {{ form.duration }} </p>
         <p>Enter the frequency of the survey: {{ form.frequency }}</p>
-        <p>Enter the survey instrument (work categories) here: {{ form.instrument }}</p>
+        <p>Enter the start date of the survey: {{ form.start_date }}</p>
         <button type="submit" class="btn btn-default">Create</button>
     </div>
 </form>

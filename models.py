@@ -1,34 +1,47 @@
 from app import db
+from sqlalchemy import ForeignKey
+from sqlalchemy.dialects import postgresql
 
 class Survey(db.Model):
-    __tablename__ = 'surveys'
+    __tablename__ = 'survey'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String) # name of the survey
-    duration = db.Column(db.Integer)   # number of days the survey will run for
-    frequency = db.Column(db.Integer)  # number of pings sent per day
-    instrument = db.Column(db.String)  # string of the survey instrument
+    name = db.Column(db.String)
+    duration = db.Column(db.Integer)    # number of days the survey will run for
+    frequency = db.Column(db.Integer)   # number of pings sent per day
+    start_date = db.Column(db.DateTime) # date the survey begins
 
     participants = db.relationship('Participant', backref='survey')
     pings = db.relationship('Ping', backref='survey')
 
+
+class Question(db.Model):
+    __tablename__ = 'question'
+    id = db.Column(db.Integer, primary_key=True)
+    survey_id = db.Column(db.Integer, ForeignKey('survey.id'))
+    question_one_letter = db.Column(db.String)
+    question_two_letter = db.Column(db.String)
+    question_one_text = db.Column(db.String)
+    question_two_text = db.Column(db.String)
+
+
 class Participant(db.Model):
-    __tablename__ = 'participants'
+    __tablename__ = 'participant'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    survey_id = db.Column(db.Integer, ForeignKey('survey.id'))
     name = db.Column(db.String)
     phone_number = db.Column(db.String)
     role = db.Column(db.String)
     location = db.Column(db.String)
-    survey_id = db.Column(db.Integer, db.ForeignKey('surveys.id'))
 
 
 class Ping(db.Model):
-    __tablename__ = 'pings'
+    __tablename__ = 'ping'
 
     id = db.Column(db.Integer, primary_key=True)
-    survey_id = db.Column(db.Integer, db.ForeignKey('surveys.id'))
-    participant_id = db.Column(db.Integer, db.ForeignKey('participants.id'))
+    survey_id = db.Column(db.Integer, ForeignKey('survey.id'))
+    participant_id = db.Column(db.Integer, ForeignKey('participant.id'))
     from_num = db.Column(db.String)
     sent = db.Column(db.Integer)
     received = db.Column(db.Integer)
