@@ -79,7 +79,12 @@
     </form>
 
 
-
+<h3> PRESS THIS BUTTON TO KICK OFF THE SURVEY </h3>
+    <form method="post" action="{{ url_for('schedule_pings') }}">
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">START THE SURVEY</button>
+        </div>
+    </form>
 
 </body>
 </html>

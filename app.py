@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
-from models import Survey, Question, Participant, Ping
+from models import Survey, Participant, Ping
 from forms.new_survey import NewSurveyForm
 from forms.new_participant import NewParticipantForm
 from forms.add_participant import AddParticipantForm
@@ -68,7 +68,6 @@ def show_survey_id(id):
     survey = db.session.query(Survey).get(id)
     participants = db.session.query(Participant).filter(Participant.survey_id == id)
     form = AddParticipantForm(request.form).new()
-    question_form = NewQuestionOneForm(request.form)
     questions = survey.body['question']
 
 # for letter, branch in questions.iteritems():
@@ -79,7 +78,7 @@ def show_survey_id(id):
 #     branch
 
     return render_template('survey.html', survey=survey,
-                           form=form, question_form=question_form, participants=participants, questions=questions)
+                           form=form, participants=participants, questions=questions)
 
 
 @app.route('/add_participant', methods=['POST'])
@@ -93,14 +92,25 @@ def add_to_survey():
 
     return redirect(url_for('show_survey_id', id=survey_id))
 
+@app.route('/schedule_pings', methods=['POST'])
+def schedule_pings():
+    survey_id = int(str.split(request.referrer, "/")[-1])
 
-#
-# with app.test_request_context():
-#     print url_for('show_participants')
-#     print url_for('add_to_survey')
-#     print url_for('show_surveys')
-#     print url_for('show_survey_id', id=1)
 
+
+def gen_dates(start_date, duration):
+    for i in range(duration):
+        start_date += datetime.timedelta(1)
+        if start_date.weekday() < 5:
+            yield start_date
+
+def gen_times(date, frequency):
+    ping = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=0)
+    interval = 480 / frequency
+    for i in range(frequency):
+        new_interval = random.normalvariate(interval, interval/10)
+        ping += datetime.timedelta(minutes = new_interval)
+        yield ping
 
 # endpoint for twilio POST reqests
 # TODO move this to a separate views module..
@@ -138,5 +148,4 @@ def store_response():
 
 if __name__ == '__main__':
     app.run()
-
 

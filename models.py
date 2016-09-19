@@ -17,16 +17,6 @@ class Survey(db.Model):
     pings = db.relationship('Ping', backref='survey')
 
 
-class Question(db.Model):
-    __tablename__ = 'question'
-    id = db.Column(db.Integer, primary_key=True)
-    survey_id = db.Column(db.Integer, ForeignKey('survey.id'))
-    question_one_letter = db.Column(db.String)
-    question_one_text = db.Column(db.String)
-    question_two_letter = db.Column(db.String)
-    question_two_text = db.Column(db.String)
-
-
 class Participant(db.Model):
     __tablename__ = 'participant'
 
