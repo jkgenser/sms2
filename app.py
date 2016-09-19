@@ -4,6 +4,7 @@ import config
 import twilio.twiml
 import os
 import datetime
+import json
 
 
 app = Flask(__name__)
@@ -15,7 +16,6 @@ from models import Survey, Question, Participant, Ping
 from forms.new_survey import NewSurveyForm
 from forms.new_participant import NewParticipantForm
 from forms.add_participant import AddParticipantForm
-from forms.add_question import NewQuestionOneForm
 
 # View to see all participants who have been added to the application
 @app.route('/participants', methods=['GET', 'POST'])
@@ -54,9 +54,11 @@ def create_survey():
     surveys = db.session.query(Survey).all()
 
     new_survey = Survey(**form.data)
-    # new_survey.id = db.session.query(Survey).order_by(Survey.id.desc()).first().id + 1
+    new_survey.body = json.loads(form.data['body'])
+
     db.session.add(new_survey)
     db.session.commit()
+
     return render_template('surveys.html', surveys=surveys, form=form)
 
 
@@ -67,17 +69,17 @@ def show_survey_id(id):
     participants = db.session.query(Participant).filter(Participant.survey_id == id)
     form = AddParticipantForm(request.form).new()
     question_form = NewQuestionOneForm(request.form)
+    questions = survey.body['question']
 
-    try:
-        question_one_text = db.session.query(Question).\
-            filter(Question.survey_id == id).filter(Question.\
-            question_one_text != None).first().question_one_text
-    except:
-        question_one_text = 'Text not yet configured.'
+# for letter, branch in questions.iteritems():
+#     for number, option in branch['options'].iteritems():
+#         number, option
+#
+# for letter, branch in questions.iteritems():
+#     branch
 
     return render_template('survey.html', survey=survey,
-                           form=form, question_form=question_form, participants=participants,
-                           question_one_text=question_one_text)
+                           form=form, question_form=question_form, participants=participants, questions=questions)
 
 
 @app.route('/add_participant', methods=['POST'])
@@ -90,48 +92,6 @@ def add_to_survey():
     db.session.commit()
 
     return redirect(url_for('show_survey_id', id=survey_id))
-
-
-@app.route('/add_question_one', methods=['POST'])
-def add_question_one():
-    question_form = NewQuestionOneForm(request.form)
-    survey_id = int(str.split(request.referrer, "/")[-1])
-
-    q_template = ('What are you doing now? '
-                  + ' '.join([question_form.data['option_one'],
-                              ('(' + question_form.data['option_one_letter'] + ')'),
-                              question_form.data['option_two'],
-                              ('(' + question_form.data['option_two_letter'] + ')'),
-                              question_form.data['option_three'],
-                              ('(' + question_form.data['option_three_letter'] + ')')]
-                             )
-                  )
-    letters = ','.join([question_form.data['option_one_letter'],
-                                                   question_form.data['option_two_letter'],
-                                                   question_form.data['option_three_letter']])
-
-    if db.session.query(Question).filter(Question.survey_id == survey_id).count() == 0:
-        question = {}
-        question['survey_id'] = survey_id
-        question['question_one_text'] = q_template
-        question['question_one_letter'] = letters
-        new_question = Question(**question)
-        db.session.add(new_question)
-        db.session.commit()
-    else:
-        q_to_update = db.session.query(Question).\
-            filter(Question.survey_id == survey_id).\
-            filter(Question.question_one_text != None).first()
-        q_to_update.question_one_text = q_template
-        q_to_update.question_one_letter = letters
-        db.session.commit()
-
-    return redirect(url_for('show_survey_id', id=survey_id))
-
-@app.route('/add_question_two', methods=['POST'])
-def add_question_two():
-    question_form_2 = NewQuestionTwoForm(request.form)
-    survey_id = int(str.split(request.referrer, "/")[-1])
 
 
 #

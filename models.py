@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import ForeignKey
-from sqlalchemy.dialects import postgresql
+from sqlalchemy.dialects.postgresql import JSON
 
 class Survey(db.Model):
     __tablename__ = 'survey'
@@ -10,6 +10,8 @@ class Survey(db.Model):
     duration = db.Column(db.Integer)    # number of days the survey will run for
     frequency = db.Column(db.Integer)   # number of pings sent per day
     start_date = db.Column(db.DateTime) # date the survey begins
+    body = db.Column(JSON)
+    prompt = db.Column(db.String)
 
     participants = db.relationship('Participant', backref='survey')
     pings = db.relationship('Ping', backref='survey')
@@ -20,8 +22,8 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     survey_id = db.Column(db.Integer, ForeignKey('survey.id'))
     question_one_letter = db.Column(db.String)
-    question_two_letter = db.Column(db.String)
     question_one_text = db.Column(db.String)
+    question_two_letter = db.Column(db.String)
     question_two_text = db.Column(db.String)
 
 

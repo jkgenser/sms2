@@ -28,6 +28,20 @@
         </tbody>
     </table>
 
+<h3>Branches on this survey</h3>
+
+<ul>
+    {% for letter, branch in questions.iteritems() %}
+    <li>{{ letter }} ({{ branch['text'] }})</li>
+
+        {% for number, option in branch['options'].iteritems() %}
+        <ul>
+            <li>{{ number }} ({{ option }})</li>
+        </ul>
+        {% endfor %}
+    {% endfor %}
+</ul>
+
 
 <h3>Participants on this Survey</h3>
 
@@ -60,28 +74,10 @@
     <form method="post" action="{{ url_for('add_to_survey') }}">
         <div class="form-group">
             <p>Add an unassigned individual to the survey. {{ form.new_participant }}</p>
-            <button type="submit" class="btn btn-default">Add</button>
+            <button type="submit" class="btn btn-default">Add Participant</button>
         </div>
     </form>
 
-<h3>Question Level 1</h3>
-
-    <p> {{ question_one_text }}</p>
-
-<h3>Configure Question (Level 1) Options</h3>
-    <form method="post" action="{{ url_for('add_question_one') }}">
-        <div class="form-group">
-            <p>Add first option for group of activities: {{ question_form.option_one }}
-                corresponding response (letter): {{ question_form.option_one_letter }}</p>
-            <p>Add second option for group of activities: {{ question_form.option_two }}
-                corresponding response (letter): {{ question_form.option_two_letter }}</p>
-            <p>Add third option for group of activities: {{ question_form.option_three }}
-                corresponding response (letter): {{ question_form.option_three_letter }}</p>
-            <button type="submit" class="btn btn-default">Add</button>
-        </div>
-    </form>
-
-<h3>Configure Question (Level 2) Options</h3>
 
 
 
