@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
+from celery import Celery
 import config
 import twilio.twiml
 import os
@@ -15,6 +16,10 @@ db = SQLAlchemy(app)
 from models import Survey, Participant, Ping
 
 
+# from generate_pings import gen_dates, gen_times, gen_ping_object, ping_loader
+# ping_obj = gen_ping_object(datetime.date(2016,10,5), 16, 1, 1)
+#
+# ping_loader(ping_obj)
 
 # endpoint for twilio POST reqests
 # TODO move this to a separate views module..
