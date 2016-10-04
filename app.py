@@ -39,7 +39,7 @@ def survey_controller():
     participant = db.session.query(Participant).filter(Participant.phone_number == from_number).all()[0]
 
     # Look up survey categories for that survey
-    survey_json = db.session.query(Survey).get(s_id).body
+    survey_json = db.session.query(Survey).get(participant.survey_id).body
     categories = survey_json['question'].keys()
 
     if body.upper() in categories:
@@ -48,15 +48,17 @@ def survey_controller():
                                 p_id = participant.id,
                                 s_id = participant.survey_id))
 
-    # Also add logic to make sure that they have gone through the top level question ...
-    # Arbitrarily entering a 1 will not result in storing that value
+    # ADD COOKIE to make sure that they have gone through the top level question ...
+    # SO THAT ARBITRARILY REPLYING WITH a 1 will not result in storing that value
     try:
         if type(int(body)) == int:
             sub_categories = []
             for key in survey_json['question'].keys():
                 for branch in survey_json['question'][key]['options'].keys():
                     sub_categories.append(branch)
-            print sub_categories
+            if body in sub_categories:
+                # Log results in database
+                # Return thank you message
 
     except ValueError:
         print 'Please give me a better answer!'
