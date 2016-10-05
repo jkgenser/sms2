@@ -27,7 +27,8 @@ def retrieve_scheduled_pings():
     # Retrieve pings that need to be sent
     # Between 'minutes_ago' and 'current_time'
     try:
-        all_pings = db.session.query(Ping).filter(and_(Ping.sent_time > minutes_ago, Ping.sent_time < current_time)).all()
+        all_pings = db.session.query(Ping).filter(and_(Ping.sent_time > minutes_ago,
+                                                       Ping.sent_time < current_time)).all()
     except NoResultFound:
         return
 
