@@ -57,6 +57,15 @@ def survey_controller():
                     if session['response_logged'] != 1:
                         print 'response not yet logged, now will be logged'
 
+                        ping = {}
+                        ping['participant_id'] = participant.id
+                        ping['survey_id'] = participant.survey_id
+                        ping['received'] = 1
+                        ping['received_time'] = datetime.datetime.now()
+                        ping['response'] = body
+                        db.session.add(Ping(**ping))
+                        db.session.commit()
+
                         response = twiml.Response()
                         response.message('Thanks! We logged your response.')
                         session['response_logged'] = 1
@@ -80,10 +89,6 @@ def survey_controller():
         return str(response)
 
 
-
-
-
-
 @app.route('/sub_category', methods=['GET', 'POST'])
 def subcategory_controller():
     body = request.args['body']
@@ -102,7 +107,7 @@ def subcategory_controller():
         response = twiml.Response()
         response.message(''.join(send_list))
 
-        session['conv_expires'] = datetime.datetime.now() + datetime.timedelta(minutes=15)
+        session['conv_expires'] = datetime.datetime.now() + datetime.timedelta(minutes=30)
         session['response_logged'] = 0
         session['last_answer'] = body
 
