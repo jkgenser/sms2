@@ -1,1 +1,1 @@
-web: gunicorn sms2:app
+web: gunicorn wsgi:app
