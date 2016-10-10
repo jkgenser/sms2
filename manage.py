@@ -8,10 +8,10 @@ from models import Participant, Survey, Ping
 manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
 twilio_account_sid = app.config['TWILIO_ACCOUNT_SID']
 twilio_auth_token = app.config['TWILIO_AUTH_TOKEN']
 twilio_number = app.config['TWILIO_NUMBER']
-
 client = Client(twilio_account_sid, twilio_auth_token)
 
 
@@ -29,7 +29,7 @@ def retrieve_scheduled_pings():
     try:
         all_pings = db.session.query(Ping).filter(and_(Ping.sent_time > minutes_ago,
                                                        Ping.sent_time < current_time)).all()
-    except NoResultFound:
+    except:
         return
 
     for ping in all_pings:
@@ -71,6 +71,33 @@ def add_pings(start_year, start_month, start_day, duration, frequency, survey_id
     start_date = datetime(start_year, start_month, start_day)
     ping_obj = gen_ping_object(start_date, duration, frequency, survey_id, participant_id)
     ping_loader(ping_obj)
+
+
+@manager.command
+def add_survey(name, survey_name):
+    from forms import surveys
+    survey = {}
+    survey['name'] = name
+    survey['body'] = surveys.survey_dict[survey_name]
+
+    db.session.add(Survey(**survey))
+    db.session.commit()
+    print 'survey added!'
+
+
+@manager.command
+def add_participant(name,phone_number,role,location,survey_id):
+    participant = {}
+    participant['name'] = name
+    participant['phone_number'] = phone_number
+    participant['role'] = role
+    participant['location'] = location
+    participant['survey_id'] = int(survey_id)
+
+    db.session.add(Participant(**participant))
+    db.session.commit()
+    print 'participant added!'
+
 
 
 if __name__ == "__main__":

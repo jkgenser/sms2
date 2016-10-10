@@ -13,3 +13,4 @@ class DefaultConfig(object):
 
 class DevelopmentConfig(DefaultConfig):
     Debug = True
+    SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]

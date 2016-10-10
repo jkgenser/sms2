@@ -14,13 +14,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
+from models import Survey, Participant, Ping
+
 twilio_account_sid = app.config['TWILIO_ACCOUNT_SID']
 twilio_auth_token = app.config['TWILIO_AUTH_TOKEN']
 twilio_number = app.config['TWILIO_NUMBER']
-
 client = Client(twilio_account_sid, twilio_auth_token)
 
-from models import Survey, Participant, Ping
+
 
 
 # endpoint for twilio POST reqests
