@@ -23,6 +23,10 @@ client = Client(twilio_account_sid, twilio_auth_token)
 
 
 
+@app.route('/', methods='GET')
+def index():
+    print 'Hello! This is the CCA SMS app!'
+
 
 # endpoint for twilio POST reqests
 # TODO move this to a separate views module..
