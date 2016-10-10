@@ -4,6 +4,7 @@ from flask_migrate import upgrade as upgrade_database
 from twilio.rest import TwilioRestClient as Client
 from app import app, db
 from models import Participant, Survey, Ping
+import arrow
 
 manager = Manager(app)
 migrate = Migrate(app, db)
@@ -21,14 +22,15 @@ def retrieve_scheduled_pings():
     # from models import Participant, Survey, Ping
     from sqlalchemy import and_
     import datetime
-    current_time = datetime.datetime.now()
+    current_time = datetime.datetime.utcnow()
+    current_time = arrow.get(current_time).to('US/Eastern')
     minutes_ago = current_time - datetime.timedelta(minutes=30)
 
     # Retrieve pings that need to be sent
     # Between 'minutes_ago' and 'current_time'
     try:
-        all_pings = db.session.query(Ping).filter(and_(Ping.sent_time > minutes_ago,
-                                                       Ping.sent_time < current_time)).all()
+        all_pings = db.session.query(Ping).filter(and_(Ping.sent_time > minutes_ago.datetime,
+                                                       Ping.sent_time < current_time.datetime)).all()
     except:
         return
 
