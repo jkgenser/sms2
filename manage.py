@@ -23,7 +23,7 @@ def retrieve_scheduled_pings():
     from sqlalchemy import and_
     import datetime
     current_time = datetime.datetime.utcnow()
-    current_time = arrow.get(current_time).to('US/Eastern')
+    current_time = current_time - datetime.timedelta(hours=4)
     minutes_ago = current_time - datetime.timedelta(minutes=30)
 
     # Retrieve pings that need to be sent
