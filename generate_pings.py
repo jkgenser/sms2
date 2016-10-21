@@ -55,6 +55,7 @@ def ping_loader(ping_obj):
         ping['sent_time'] = ping_time
         ping['survey_id'] = ping_obj['survey_id']
         ping['participant_id'] = ping_obj['participant_id']
+        print 'ping {} added'.format(ping)
         db.session.add(Ping(**ping))
         db.session.commit()
 
