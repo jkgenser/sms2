@@ -10,7 +10,9 @@ def gen_dates(start_date, duration):
     weekdays.
     """
     for i in range(duration):
-        start_date += datetime.timedelta(1)
+        if i > 0:
+            # increment date only after the first iteration
+            start_date += datetime.timedelta(1)
         if start_date.weekday() < 5:
             yield start_date
 
@@ -38,9 +40,9 @@ def gen_ping_object(start, duration, frequency, survey_id, participant_id):
     pings = {}
     ping_times = []
     start = start
-    for i in gen_dates(start, duration):
-        for j in gen_times(i, frequency):
-            ping_times.append(j)
+    for day in gen_dates(start, duration):
+        for time in gen_times(day, frequency):
+            ping_times.append(time)
     pings['ping_times'] = ping_times
     pings['survey_id'] = survey_id
     pings['participant_id'] = participant_id
