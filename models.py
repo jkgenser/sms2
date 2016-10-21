@@ -40,5 +40,4 @@ class Ping(db.Model):
     received_time = db.Column(db.DateTime)
     sent_time = db.Column(db.DateTime)
     response = db.Column(db.String)
-    response_scale = db.Column(db.String)
 
