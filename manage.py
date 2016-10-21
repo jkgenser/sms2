@@ -24,7 +24,7 @@ def retrieve_scheduled_pings():
     import datetime
     current_time = datetime.datetime.utcnow()
     current_time = current_time - datetime.timedelta(hours=4)
-    minutes_ago = current_time - datetime.timedelta(minutes=30)
+    minutes_ago = current_time - datetime.timedelta(minutes=12)
 
     # Retrieve pings that need to be sent
     # Between 'minutes_ago' and 'current_time'
