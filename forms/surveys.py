@@ -1,6 +1,6 @@
 test_survey = {
     "title": "Survey for Care Partners",
-    "prompt": "What are you doing now?",
+    "prompt": "What have you been up to?",
     "question": {
         "A": {
             "text": "travel",
@@ -33,5 +33,39 @@ test_survey = {
     }
 }
 
+test_survey_office = {
+    "title": "Survey for ClinOps Office",
+    "prompt": "What have you been up to?",
+    "question": {
+        "A": {
+            "text": "desk work",
+            "options":
+                {
+            "1": "mostly emailing",
+            "2": "mostly working with documents",
+            "3": "can't remember"
+                }
+        },
+        "B": {
+            "text": "meetings",
+            "options":
+                {
+            "4": "meetings 1 on 1 ",
+            "5": "meetings in group",
+                }
+        },
+        "C": {
+            "text": "other",
+            "options":
+                {
+            "7": "lunch",
+            "8": "running errands",
+            "9": "something else",
+                }
+        }
+    }
+}
+
 survey_dict = {}
 survey_dict['test_survey'] = test_survey
+survey_dict['test_survey_office'] = test_survey_office

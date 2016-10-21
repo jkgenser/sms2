@@ -41,7 +41,6 @@ def retrieve_scheduled_pings():
 def send_prompt(ping):
     # Get the number of the person to send a text to
     to = db.session.query(Participant).get(ping.participant_id).phone_number
-
     # Get the survey instrument for the person I'm sending the text to
     survey_json = db.session.query(Survey).get(ping.survey_id).body
     body = '{0} A ({1}), B ({2}), or C ({3})?'.format(survey_json['prompt'],

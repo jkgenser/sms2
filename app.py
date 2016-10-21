@@ -65,7 +65,7 @@ def survey_controller():
                         ping['participant_id'] = participant.id
                         ping['survey_id'] = participant.survey_id
                         ping['received'] = 1
-                        ping['received_time'] = datetime.datetime.now()
+                        ping['received_time'] = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
                         ping['response'] = body
                         db.session.add(Ping(**ping))
                         db.session.commit()
@@ -84,7 +84,7 @@ def survey_controller():
 
         except:
             response = twiml.Response()
-            response.message('Did you have a typo? Please enter a number corresponding to your choice.')
+            response.message('Was there a typo in your last message? Please enter a number corresponding to your choice.')
             return str(response)
 
     if session.get('conv_expires') < datetime.datetime.now():
@@ -103,7 +103,7 @@ def subcategory_controller():
     sub_categories = survey_json['question'][body]['options'].keys()
 
     if body.upper() in survey_json['question'].keys():
-        send_list = ["Thanks! What is the more granular type of work?: "]
+        send_list = ["Thanks! What about a more granular work you've been doing since the last prompt you replied to?: "]
         for sub in sub_categories:
             stub = ''.join([sub, '(', survey_json['question'][body]['options'][sub], ') ', ])
             send_list.append(stub)
