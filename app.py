@@ -27,8 +27,38 @@ def index():
     return 'Hello! This is the CCA SMS app!'
 
 
+# endpoint for twilio POSTS
+@app.route('/sms', methods=['GET', 'POST'])
+def controller():
+    from_number = request.values['From']
+    answer = request.values['Body']
+    participant = db.session.query(Participant).filter(Participant.phone_number == from_number).all()[0]
+
+    if answer.upper() not in ['Y', 'YES', 'N', 'NO']:
+        response = twiml.Response()
+        response.message('Was there a typo in your reply? Please answer with: "Y/YES" or "N/NO"')
+
+    if answer.upper() in ['Y', 'YES']:
+        survey_answer = 1
+
+    elif answer.upper() in ['N', 'NO']:
+        survey_answer = 0
+
+    ping = {}
+    ping['participant_id'] = participant.id
+    ping['survey_id'] = participant.survey_id
+    ping['received'] = 1
+    ping['received_time'] = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    ping['response'] = survey_answer
+    db.session.add(Ping(**ping))
+    db.session.commit()
+
+    response = twiml.Response()
+    response.message('Thank you for replying! We logged your response!')
+    return str(response)
+
+
 # endpoint for twilio POST reqests
-# TODO move this to a separate views module..
 @app.route('/message', methods=['GET', 'POST'])
 def survey_controller():
 

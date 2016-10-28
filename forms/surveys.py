@@ -66,6 +66,14 @@ test_survey_office = {
     }
 }
 
+survey_questions = {
+    "sent": {
+        1: "Have you been doing ADMINISTRATIVE work in the last hour or so? (y/n)",
+        2: "Have you been TRAVELING in the last hour or so? (y/n)"
+    }
+}
+
 survey_dict = {}
 survey_dict['test_survey'] = test_survey
 survey_dict['test_survey_office'] = test_survey_office
+survey_dict['survey_questions'] = survey_questions

@@ -2,6 +2,7 @@ from app import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import JSON
 
+
 class Survey(db.Model):
     __tablename__ = 'survey'
 

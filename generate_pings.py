@@ -18,15 +18,17 @@ def gen_dates(start_date, duration):
 
 def gen_times(date, frequency):
     """
-    yields times between 9 and 5 based on frequency given, with slight random shocks
-    added to the interval
+    yields times between 9 and 5 based on frequency given, completely randomly spaced out
     """
-    ping = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=0)
-    interval = 480 / frequency
+    choices = []
+    for i in range(480):
+        choices.append(i)
+
     for i in range(frequency):
-        new_interval = random.normalvariate(interval, interval/10)
-        ping += datetime.timedelta(minutes = new_interval)
-        yield ping
+        new_time = random.choice(choices)
+        ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=0)
+        ping_time += datetime.timedelta(minutes=new_time)
+        yield ping_time
 
 
 def gen_ping_object(start, duration, frequency, survey_id, participant_id):

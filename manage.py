@@ -17,7 +17,7 @@ client = Client(twilio_account_sid, twilio_auth_token)
 
 
 @manager.command
-def retrieve_scheduled_pings():
+def retrieve_scheduled_pings(choice):
 
     # from models import Participant, Survey, Ping
     from sqlalchemy import and_
@@ -35,18 +35,19 @@ def retrieve_scheduled_pings():
         return
 
     for ping in all_pings:
-        send_prompt(ping)
+            send_prompt(ping, choice)
 
 
-def send_prompt(ping):
-    # Get the number of the person to send a text to
+def send_prompt(ping, choice):
+    # Get the number of the person to send a text to for the given ping
     to = db.session.query(Participant).get(ping.participant_id).phone_number
-    # Get the survey instrument for the person I'm sending the text to
+    # Get the survey instrument for the person I'm sending the text to, for the given ping
     survey_json = db.session.query(Survey).get(ping.survey_id).body
-    body = '{0} A ({1}), B ({2}), or C ({3})?'.format(survey_json['prompt'],
-                                                   survey_json['question']['A']['text'],
-                                                   survey_json['question']['B']['text'],
-                                                   survey_json['question']['C']['text'])
+    if choice == '1':
+        body = survey_json['sent'][choice]
+
+    if choice == '2':
+        body = survey_json['sent'][choice]
 
     client.messages.create(
         to=to,
