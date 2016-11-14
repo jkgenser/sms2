@@ -48,7 +48,7 @@ def controller():
     ping['participant_id'] = participant.id
     ping['survey_id'] = participant.survey_id
     ping['received'] = 1
-    ping['received_time'] = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+    ping['received_time'] = datetime.datetime.utcnow() - datetime.timedelta(hours=5)
     ping['response'] = survey_answer
     db.session.add(Ping(**ping))
     db.session.commit()

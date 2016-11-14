@@ -73,7 +73,21 @@ survey_questions = {
     }
 }
 
+survey_admin ={
+    "sent":{
+        1: "Have you been doing ADMINISTRATIVE work in the last hour or so? (Y/N)"
+    }
+}
+
+survey_admin_night = {
+    "sent":{
+        1:"Did you LOG CLINICAL INFORMATION after hours yesterday? (Y/N)"
+    }
+}
+
 survey_dict = {}
 survey_dict['test_survey'] = test_survey
 survey_dict['test_survey_office'] = test_survey_office
 survey_dict['survey_questions'] = survey_questions
+survey_dict['survey_admin'] = survey_admin
+survey_dict['survey_admin_night'] = survey_admin_night

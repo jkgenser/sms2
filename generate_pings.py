@@ -31,7 +31,16 @@ def gen_times(date, frequency):
         yield ping_time
 
 
-def gen_ping_object(start, duration, frequency, survey_id, participant_id):
+def gen_times_morning(date, frequency):
+    """y
+    yields times
+    """
+    for i in range(frequency):
+        ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=30)
+        yield ping_time
+
+
+def gen_ping_object(start, duration, frequency, survey_id, participant_id, morning=None):
     """
     Create dictionary to hold pings for a given person
     start: datetime.date(year, month, day)
@@ -43,8 +52,16 @@ def gen_ping_object(start, duration, frequency, survey_id, participant_id):
     ping_times = []
     start = start
     for day in gen_dates(start, duration):
-        for time in gen_times(day, frequency):
-            ping_times.append(time)
+
+        # Use normal gen_times generator if morning=None
+        if morning == None:
+            for time in gen_times(day, frequency):
+                ping_times.append(time)
+
+        # Use morning function if morning=1
+        elif morning == 1:
+            for time in gen_times_morning(day, frequency):
+                ping_time.append(time)
     pings['ping_times'] = ping_times
     pings['survey_id'] = survey_id
     pings['participant_id'] = participant_id
