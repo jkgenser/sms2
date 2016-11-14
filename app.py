@@ -37,6 +37,7 @@ def controller():
     if answer.upper() not in ['Y', 'YES', 'N', 'NO']:
         response = twiml.Response()
         response.message('Was there a typo in your reply? Please answer with: "Y/YES" or "N/NO"')
+        return str(response)
 
     if answer.upper() in ['Y', 'YES']:
         survey_answer = 1
