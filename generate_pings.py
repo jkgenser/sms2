@@ -54,14 +54,14 @@ def gen_ping_object(start, duration, frequency, survey_id, participant_id, morni
     for day in gen_dates(start, duration):
 
         # Use normal gen_times generator if morning=None
-        if morning == None:
+        if morning == '0':
             for time in gen_times(day, frequency):
                 ping_times.append(time)
 
         # Use morning function if morning=1
-        elif morning == 1:
+        elif morning == '1':
             for time in gen_times_morning(day, frequency):
-                ping_time.append(time)
+                ping_times.append(time)
     pings['ping_times'] = ping_times
     pings['survey_id'] = survey_id
     pings['participant_id'] = participant_id

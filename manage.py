@@ -58,7 +58,7 @@ def send_prompt(ping, choice):
 
 
 @manager.command
-def add_pings(start_year, start_month, start_day, duration, frequency, survey_id, participant_id):
+def add_pings(start_year, start_month, start_day, duration, frequency, survey_id, participant_id, morning_option):
     from generate_pings import gen_dates, gen_times, gen_ping_object, ping_loader
     from datetime import datetime
 
@@ -71,7 +71,7 @@ def add_pings(start_year, start_month, start_day, duration, frequency, survey_id
     participant_id = int(participant_id)
 
     start_date = datetime(start_year, start_month, start_day)
-    ping_obj = gen_ping_object(start_date, duration, frequency, survey_id, participant_id)
+    ping_obj = gen_ping_object(start_date, duration, frequency, survey_id, participant_id, morning_option)
     ping_loader(ping_obj)
 
 
