@@ -5,7 +5,6 @@ from twilio.rest import TwilioRestClient as Client
 from app import app, db
 from models import Participant, Survey, Ping
 import arrow
-
 manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
@@ -59,7 +58,7 @@ def send_prompt(ping, choice):
 
 @manager.command
 def add_pings(start_year, start_month, start_day, duration, frequency, survey_id, participant_id, morning_option):
-    from generate_pings import gen_dates, gen_times, gen_ping_object, ping_loader
+    from generate_pings import gen_ping_object, ping_loader
     from datetime import datetime
 
     start_year = int(start_year)

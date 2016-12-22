@@ -32,7 +32,7 @@ def gen_times(date, frequency):
 
 
 def gen_times_morning(date, frequency):
-    """y
+    """
     yields times
     """
     for i in range(frequency):
